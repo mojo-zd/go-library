@@ -8,6 +8,6 @@ import (
 	"github.com/mojo-zd/go-library"
 )
 
-func Test_Underline(t *testing.T) {
+func Test_UnderLine(t *testing.T) {
 	fmt.Println(go_library.ToUnderLineLower("TestName"))
 }
