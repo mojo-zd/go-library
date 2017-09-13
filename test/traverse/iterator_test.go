@@ -1,6 +1,7 @@
 package traverse
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mojo-zd/go-library/debug"
@@ -21,12 +22,11 @@ func Test_Iterator_(t *testing.T) {
 
 func Test_Contains(t *testing.T) {
 	person1 := &Person{Name: "mojo", Sex: 5}
-	//person2 := &Person{Name: "mt", Sex: 4}
+	person2 := &Person{Name: "mt", Sex: 4}
 	person3 := &Person{Name: "mojo", Sex: 5}
-	//persons := []*Person{person1, person2}
-	//debug.Display("", *person1 == *person3)
-	//fmt.Println(helper.Contains(persons, person3))
-	Eq(person1, person3)
+	persons := []*Person{person1, person2}
+	fmt.Println(traverse.Contains(persons, person3))
+	//Eq(person1, person3)
 }
 
 func Eq(value1, value2 interface{}) {
