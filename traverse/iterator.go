@@ -29,7 +29,6 @@ func Contains(collection interface{}, target interface{}) (contains bool) {
 	v := reflect.ValueOf(collection)
 	for index := 0; index < v.Len(); index++ {
 		value := v.Index(index).Interface()
-		//debug.Display("===比较结果===", compare(value, target))
 		if compare(value, target) {
 			contains = true
 			break
