@@ -21,14 +21,9 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (resu
 	result = map[interface{}]interface{}{}
 	v := reflect.ValueOf(slice)
 	for index := 0; index < v.Len(); index++ {
-		var value interface{}
-		if v.Kind() == reflect.Ptr {
-			value = v.Elem().Index(index).Interface()
-		} else {
-			value = v.Index(index).Interface()
-		}
-
+		value := getValue(v).Index(index).Interface()
 		keyValue := GetValueByName(value, key)
+
 		if handleFunc != nil {
 			result[keyValue] = handleFunc(value)
 		} else {
