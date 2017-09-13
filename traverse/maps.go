@@ -1,6 +1,8 @@
 package traverse
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type MapHandleFunc func(value interface{}) interface{}
 
@@ -19,7 +21,13 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (resu
 	result = map[interface{}]interface{}{}
 	v := reflect.ValueOf(slice)
 	for index := 0; index < v.Len(); index++ {
-		value := v.Index(index).Interface()
+		var value interface{}
+		if v.Kind() == reflect.Ptr {
+			value = v.Elem().Index(index).Interface()
+		} else {
+			value = v.Index(index).Interface()
+		}
+
 		keyValue := GetValueByName(value, key)
 		if handleFunc != nil {
 			result[keyValue] = handleFunc(value)
@@ -33,11 +41,33 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (resu
 func GetValueByName(i interface{}, key string) (value interface{}) {
 	ty := reflect.TypeOf(i)
 	v := reflect.ValueOf(i)
-	for index := 0; index < ty.NumField(); index++ {
-		if ty.Field(index).Name == key {
-			value = v.FieldByName(ty.Field(index).Name).Interface()
+	numField := getType(ty).NumField()
+
+	for index := 0; index < numField; index++ {
+		field := getType(ty).Field(index)
+		fieldValue := getValue(v)
+		if field.Name == key {
+			value = fieldValue.FieldByName(field.Name).Interface()
 			break
 		}
 	}
+	return
+}
+
+func getType(ty reflect.Type) (t reflect.Type) {
+	if ty.Kind() == reflect.Ptr {
+		t = ty.Elem()
+		return
+	}
+	t = ty
+	return
+}
+
+func getValue(value reflect.Value) (v reflect.Value) {
+	if value.Kind() == reflect.Ptr {
+		v = value.Elem()
+		return
+	}
+	v = value
 	return
 }

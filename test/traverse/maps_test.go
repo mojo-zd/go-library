@@ -13,12 +13,12 @@ func Test_GetStructByName(t *testing.T) {
 }
 
 func Test_StructToMap(t *testing.T) {
-	persons := []Person{}
-	person := Person{Name: "mojo", Sex: 1}
-	person1 := Person{Name: "mt", Sex: 0}
+	persons := []*Person{}
+	person := &Person{Name: "mojo", Sex: 1}
+	person1 := &Person{Name: "mt", Sex: 2}
 	persons = append(persons, person, person1)
 	result := traverse.StructsToMap(persons, "Name", func(value interface{}) (v interface{}) {
-		v = value.(Person).Sex
+		v = value.(*Person).Sex
 		return
 	})
 	debug.Display("", result)
