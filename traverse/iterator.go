@@ -4,7 +4,16 @@ import (
 	"reflect"
 )
 
-type IteratorFunc func(index int, value interface{})
+type CYCLE_FLAG int
+
+const (
+	_ CYCLE_FLAG = iota
+	BREAK_FLAT
+	CONTINUE_FLAT
+	NOTHING_TODO
+)
+
+type IteratorFunc func(index int, value interface{}) CYCLE_FLAG
 
 func Iterator(collection interface{}, handlerFunc IteratorFunc) {
 	v := reflect.ValueOf(collection)
@@ -14,7 +23,12 @@ func Iterator(collection interface{}, handlerFunc IteratorFunc) {
 	}
 
 	for index := 0; index < v.Len(); index++ {
-		handlerFunc(index, v.Index(index).Interface())
+		flag := handlerFunc(index, v.Index(index).Interface())
+		if flag == BREAK_FLAT {
+			break
+		} else if flag == CONTINUE_FLAT {
+			continue
+		}
 	}
 }
 

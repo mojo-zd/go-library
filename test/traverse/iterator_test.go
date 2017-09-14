@@ -14,9 +14,13 @@ type Person struct {
 }
 
 func Test_Iterator_(t *testing.T) {
-	persons := []Person{{Name: "mojo"}}
-	traverse.Iterator(persons, func(index int, value interface{}) {
-		debug.Display("", value)
+	persons := []Person{{Name: "mojo"}, {Name: "mt"}}
+	traverse.Iterator(persons, func(index int, value interface{}) (flag traverse.CYCLE_FLAG) {
+		if value.(Person).Name == "mojo" {
+			flag = traverse.BREAK_FLAT
+		}
+		debug.Display("========", "")
+		return
 	})
 }
 
