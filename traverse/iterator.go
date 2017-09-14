@@ -73,10 +73,10 @@ func compare(v1, v2 interface{}) (isEqual bool) {
 
 func isSlice(value interface{}) (slice bool) {
 	v := reflect.ValueOf(value)
-	slice = true
-	if v.Kind() != reflect.Slice {
-		slice = false
-		return
-	}
-	return
+	return v.Kind() == reflect.Slice
+}
+
+func isMap(value interface{}) bool {
+	ty := reflect.TypeOf(value)
+	return ty.Kind() == reflect.Map
 }

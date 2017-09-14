@@ -6,6 +6,22 @@ import (
 
 type MapHandleFunc func(value interface{}) interface{}
 
+//key只支持基本类型
+func ContainsKey(m interface{}, key interface{}) (contains bool) {
+	value := reflect.ValueOf(m)
+	if !isMap(m) {
+		panic("m must be map!")
+	}
+
+	for _, k := range value.MapKeys() {
+		if k.Interface() == key {
+			contains = true
+			break
+		}
+	}
+	return
+}
+
 //指定struct中Key的value作为map的key map的value可以由MapHandleFunc的返回值决定, 如果想以struct作为value回调函数设置为nil即可
 //ex: Person{
 // Name string

@@ -23,3 +23,9 @@ func Test_StructToMap(t *testing.T) {
 	})
 	debug.Display("", result)
 }
+
+func Test_Map_Contains(t *testing.T) {
+	m := map[string]string{"a": "A", "b": "B"}
+	debug.Display("", traverse.ContainsKey(m, "a"))
+	//fmt.Sprintf()
+}
