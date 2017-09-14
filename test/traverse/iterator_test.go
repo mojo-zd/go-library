@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/astaxie/beego/utils"
 	"github.com/mojo-zd/go-library/debug"
 	"github.com/mojo-zd/go-library/traverse"
 )
@@ -26,9 +25,9 @@ func Test_Iterator(t *testing.T) {
 }
 func Test_Map_Iterator(t *testing.T) {
 	m := map[string]interface{}{"A": Person{Name: "mojo"}, "B": Person{Name: "mt"}}
-	traverse.MapIterator(m, func(key, value interface{}) {
-		utils.Display("==k==", key)
-		utils.Display("==v=", value)
+	traverse.MapIterator(m, func(key, value interface{}, index int) {
+		debug.Display("==k==", key)
+		debug.Display("==v=", value)
 	})
 }
 

@@ -5,7 +5,7 @@ import (
 )
 
 type MapHandleFunc func(value interface{}) interface{}
-type MapIteratorHandleFun func(key, value interface{})
+type MapIteratorHandleFun func(key, value interface{}, index int)
 
 func MapIterator(m interface{}, iteratorHandleFunc MapIteratorHandleFun) {
 	if !isMap(m) {
@@ -13,8 +13,8 @@ func MapIterator(m interface{}, iteratorHandleFunc MapIteratorHandleFun) {
 	}
 
 	value := reflect.ValueOf(m)
-	for _, k := range value.MapKeys() {
-		iteratorHandleFunc(k.Interface(), value.MapIndex(k).Interface())
+	for index, k := range value.MapKeys() {
+		iteratorHandleFunc(k.Interface(), value.MapIndex(k).Interface(), index)
 	}
 }
 
@@ -56,12 +56,12 @@ func ContainsValue(m interface{}, value interface{}) (contains bool) {
 // }
 // structs := []Person{{Name: "mojo", Sex:1}}
 // StructsToMap(structs, "Name")
-func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (result map[interface{}]interface{}) {
+func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (m interface{}) {
 	if !isSlice(slice) {
 		panic("collection must be slice!")
 		return
 	}
-	result = map[interface{}]interface{}{}
+	result := map[interface{}]interface{}{}
 	v := reflect.ValueOf(slice)
 	for index := 0; index < v.Len(); index++ {
 		value := getValue(v).Index(index).Interface()
@@ -73,6 +73,7 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (resu
 			result[keyValue] = value
 		}
 	}
+	m = result
 	return
 }
 
