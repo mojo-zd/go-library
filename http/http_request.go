@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/mojo-zd/go-library/debug"
 	"github.com/mojo-zd/go-library/traverse"
 )
 
@@ -16,10 +17,11 @@ var (
 )
 
 type RequestInfo struct {
-	URL    string
-	Params map[string]interface{}
-	Data   interface{}
-	Header map[string]string
+	URL           string
+	Params        map[string]interface{}
+	Data          interface{}
+	Header        map[string]string
+	DefaultHeader bool
 }
 
 type HttpClient struct {
@@ -30,26 +32,35 @@ func NewHttpClient() *HttpClient {
 	return &HttpClient{&RequestInfo{}}
 }
 
-func (httpClient *HttpClient) Get() (bytes []byte, err error) {
+func (client *HttpClient) Get() (bytes []byte, err error) {
+	bytes, err = doRequest(client, http.MethodGet)
+	return
+}
+
+func (client *HttpClient) Post() (bytes []byte, err error) {
+	bytes, err = doRequest(client, http.MethodPost)
+	return
+}
+
+func (client *HttpClient) Put() (bytes []byte, err error) {
+	bytes, err = doRequest(client, http.MethodPut)
+	return
+}
+
+func doRequest(httpClient *HttpClient, method string) (bytes []byte, err error) {
 	if err = validate(httpClient); err != nil {
 		return
 	}
+
 	client := &http.Client{}
-	request, err := http.NewRequest(http.MethodGet, httpClient.URL, strings.NewReader(toString(httpClient.Data)))
-	if err != nil {
-		return
+	request, err := http.NewRequest(method, httpClient.URL, strings.NewReader(toString(httpClient.Data)))
+	if httpClient.DefaultHeader {
+		httpClient.defaultHeader(request)
 	}
 	response, err := client.Do(request)
 	bytes, err = ioutil.ReadAll(response.Body)
 	defer response.Body.Close()
-	return
-}
-
-func (client *HttpClient) Post() (v interface{}, err error) {
-	return
-}
-
-func (client *HttpClient) Put() (v interface{}, err error) {
+	debug.Display("client is ", toString(httpClient.Data))
 	return
 }
 
@@ -58,7 +69,7 @@ func (client *HttpClient) BuildRequestInfo(requestInfo *RequestInfo) *HttpClient
 	return client
 }
 
-func (client *HttpClient) DefaultHeader(request *http.Request) *HttpClient {
+func (client *HttpClient) defaultHeader(request *http.Request) *HttpClient {
 	traverse.MapIterator(defaultHeader, func(key, value interface{}, index int) {
 		request.Header.Add(key.(string), value.(string))
 	})
