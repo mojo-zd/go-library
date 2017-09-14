@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/mojo-zd/go-library/debug"
 	"github.com/mojo-zd/go-library/traverse"
 )
 
@@ -60,7 +59,7 @@ func doRequest(httpClient *HttpClient, method string) (bytes []byte, err error) 
 	response, err := client.Do(request)
 	bytes, err = ioutil.ReadAll(response.Body)
 	defer response.Body.Close()
-	debug.Display("client is ", toString(httpClient.Data))
+
 	return
 }
 

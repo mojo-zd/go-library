@@ -7,11 +7,6 @@ import (
 	"github.com/mojo-zd/go-library/traverse"
 )
 
-func Test_GetStructByName(t *testing.T) {
-	person := Person{Name: "mojo", Sex: 5}
-	debug.Display("", traverse.GetValueByName(person, "Name"))
-}
-
 func Test_StructToMap(t *testing.T) {
 	persons := []*Person{}
 	person := &Person{Name: "mojo", Sex: 1}
