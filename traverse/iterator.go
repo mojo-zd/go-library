@@ -1,6 +1,7 @@
 package traverse
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -91,6 +92,7 @@ func isSlice(value interface{}) (slice bool) {
 }
 
 func isMap(value interface{}) bool {
-	ty := reflect.TypeOf(value)
+	ty := reflect.ValueOf(value)
+	fmt.Println(ty.Kind() == reflect.Map)
 	return ty.Kind() == reflect.Map
 }

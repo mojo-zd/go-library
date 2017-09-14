@@ -5,14 +5,26 @@ import (
 )
 
 type MapHandleFunc func(value interface{}) interface{}
+type MapIteratorHandleFun func(key, value interface{})
 
-//key只支持基本类型
-func ContainsKey(m interface{}, key interface{}) (contains bool) {
-	value := reflect.ValueOf(m)
+func MapIterator(m interface{}, iteratorHandleFunc MapIteratorHandleFun) {
 	if !isMap(m) {
 		panic("m must be map!")
 	}
 
+	value := reflect.ValueOf(m)
+	for _, k := range value.MapKeys() {
+		iteratorHandleFunc(k.Interface(), value.MapIndex(k).Interface())
+	}
+}
+
+//key只支持基本类型
+func ContainsKey(m interface{}, key interface{}) (contains bool) {
+	if !isMap(m) {
+		panic("m must be map!")
+	}
+
+	value := reflect.ValueOf(m)
 	for _, k := range value.MapKeys() {
 		if k.Interface() == key {
 			contains = true

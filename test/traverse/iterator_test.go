@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/astaxie/beego/utils"
 	"github.com/mojo-zd/go-library/debug"
 	"github.com/mojo-zd/go-library/traverse"
 )
@@ -13,7 +14,7 @@ type Person struct {
 	Sex  int
 }
 
-func Test_Iterator_(t *testing.T) {
+func Test_Iterator(t *testing.T) {
 	persons := []Person{{Name: "mojo"}, {Name: "mt"}}
 	traverse.Iterator(persons, func(index int, value interface{}) (flag traverse.CYCLE_FLAG) {
 		if value.(Person).Name == "mojo" {
@@ -21,6 +22,13 @@ func Test_Iterator_(t *testing.T) {
 		}
 		debug.Display("========", "")
 		return
+	})
+}
+func Test_Map_Iterator(t *testing.T) {
+	m := map[string]interface{}{"A": Person{Name: "mojo"}, "B": Person{Name: "mt"}}
+	traverse.MapIterator(m, func(key, value interface{}) {
+		utils.Display("==k==", key)
+		utils.Display("==v=", value)
 	})
 }
 
