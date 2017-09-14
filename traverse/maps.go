@@ -22,6 +22,21 @@ func ContainsKey(m interface{}, key interface{}) (contains bool) {
 	return
 }
 
+func ContainsValue(m interface{}, value interface{}) (contains bool) {
+	v := reflect.ValueOf(m)
+	if !isMap(m) {
+		panic("m must be map!")
+	}
+
+	for _, k := range v.MapKeys() {
+		if compare(v.MapIndex(k).Interface(), value) {
+			contains = true
+			break
+		}
+	}
+	return
+}
+
 //指定struct中Key的value作为map的key map的value可以由MapHandleFunc的返回值决定, 如果想以struct作为value回调函数设置为nil即可
 //ex: Person{
 // Name string
