@@ -85,37 +85,34 @@ client.BuildRequestInfo用于构建请求的相关参数
 ```
 示例:
 var client = http.NewHttpClient()
-bytes, err := client.BuildRequestInfo(
+response := client.BuildRequestInfo(
 	&http.RequestInfo{
 		URL:           "http://127.0.0.1:8001/api/catalogs",
 		DefaultHeader: true},
 ).Get()
 
-debug.Display("===返回数据==", string(bytes))
-debug.Display("===错误信息===", err)
+debug.Display("===返回数据==", response)
 ```
 #### http Post请求
 ```
 var client = http.NewHttpClient()
-bytes, err := client.BuildRequestInfo(&http.RequestInfo{
+response := client.BuildRequestInfo(&http.RequestInfo{
 	URL:           "http://127.0.0.1:8001/api/tags",
 	DefaultHeader: true,
 	Data:          Tag{Name: "mt"},
 }).Post()
 
-debug.Display("==创建成功的返回数据==", string(bytes))
-debug.Display("==错误信息==", err)
+debug.Display("==创建成功的返回数据==", response)
 ```
 
 #### http Put请求
 ```
 var client = http.NewHttpClient()
-bytes, err := client.BuildRequestInfo(&http.RequestInfo{
+response := client.BuildRequestInfo(&http.RequestInfo{
 	URL:           "http://127.0.0.1:8001/api/tags/2",
 	DefaultHeader: true,
 	Data:          Tag{Name: "mojo-v2", ID: 2},
 }).Put()
 
-debug.Display("==修改成功的返回数据==", string(bytes))
-debug.Display("==错误信息==", err)
+debug.Display("==修改成功的返回数据==", response)
 ```
