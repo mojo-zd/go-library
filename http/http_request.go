@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/mojo-zd/go-library/traverse"
 )
@@ -21,6 +22,13 @@ type RequestInfo struct {
 	Data          interface{}
 	Header        map[string]string
 	DefaultHeader bool
+	Timeout       int //以s为单位
+}
+
+type ResponseInfo struct {
+	Code   int
+	Result []byte
+	Error  error
 }
 
 type HttpClient struct {
@@ -31,33 +39,46 @@ func NewHttpClient() *HttpClient {
 	return &HttpClient{&RequestInfo{}}
 }
 
-func (client *HttpClient) Get() (bytes []byte, err error) {
-	bytes, err = doRequest(client, http.MethodGet)
+func (client *HttpClient) Get() (responseInfo *ResponseInfo) {
+	responseInfo = doRequest(client, http.MethodGet)
 	return
 }
 
-func (client *HttpClient) Post() (bytes []byte, err error) {
-	bytes, err = doRequest(client, http.MethodPost)
+func (client *HttpClient) Post() (responseInfo *ResponseInfo) {
+	responseInfo = doRequest(client, http.MethodPost)
 	return
 }
 
-func (client *HttpClient) Put() (bytes []byte, err error) {
-	bytes, err = doRequest(client, http.MethodPut)
+func (client *HttpClient) Put() (responseInfo *ResponseInfo) {
+	responseInfo = doRequest(client, http.MethodPut)
 	return
 }
 
-func doRequest(httpClient *HttpClient, method string) (bytes []byte, err error) {
-	if err = validate(httpClient); err != nil {
+func doRequest(httpClient *HttpClient, method string) (responseInfo *ResponseInfo) {
+	responseInfo = &ResponseInfo{}
+	if err := validate(httpClient); err != nil {
+		responseInfo.Error = err
 		return
 	}
 
+	bytes := []byte{}
 	client := &http.Client{}
+
 	request, err := http.NewRequest(method, httpClient.URL, strings.NewReader(toString(httpClient.Data)))
-	if httpClient.DefaultHeader {
-		httpClient.defaultHeader(request)
-	}
+	setClientInfo(httpClient.RequestInfo, client, httpClient, request)
+
 	response, err := client.Do(request)
+	if response != nil {
+		responseInfo.Code = response.StatusCode
+	}
+
+	if err != nil {
+		responseInfo.Error = err
+		return
+	}
+
 	bytes, err = ioutil.ReadAll(response.Body)
+	responseInfo.Result = bytes
 	defer response.Body.Close()
 
 	return
@@ -101,6 +122,20 @@ func (client *HttpClient) BuildURL() (url string) {
 		index++
 	})
 	return
+}
+
+func setClientInfo(requestInfo *RequestInfo, client *http.Client, httpClient *HttpClient, request *http.Request) {
+	if requestInfo.Timeout > 0 {
+		client.Timeout = time.Duration(requestInfo.Timeout) * time.Second
+	}
+
+	if len(requestInfo.Header) > 0 {
+		httpClient.buildHeader(request)
+	}
+
+	if httpClient.DefaultHeader {
+		httpClient.defaultHeader(request)
+	}
 }
 
 func toString(data interface{}) (str string) {
