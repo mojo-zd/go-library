@@ -2,6 +2,8 @@ package traverse
 
 import (
 	"reflect"
+
+	r "github.com/mojo-zd/go-library/reflect"
 )
 
 type MapHandleFunc func(value interface{}) interface{}
@@ -64,7 +66,7 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (m in
 	result := map[interface{}]interface{}{}
 	v := reflect.ValueOf(slice)
 	for index := 0; index < v.Len(); index++ {
-		value := getValue(v).Index(index).Interface()
+		value := r.GetValue(v).Index(index).Interface()
 		keyValue := GetValueByName(value, key)
 
 		if handleFunc != nil {
@@ -80,33 +82,15 @@ func StructsToMap(slice interface{}, key string, handleFunc MapHandleFunc) (m in
 func GetValueByName(i interface{}, key string) (value interface{}) {
 	ty := reflect.TypeOf(i)
 	v := reflect.ValueOf(i)
-	numField := getType(ty).NumField()
+	numField := r.GetType(ty).NumField()
 
 	for index := 0; index < numField; index++ {
-		field := getType(ty).Field(index)
-		fieldValue := getValue(v)
+		field := r.GetType(ty).Field(index)
+		fieldValue := r.GetValue(v)
 		if field.Name == key {
 			value = fieldValue.FieldByName(field.Name).Interface()
 			break
 		}
 	}
-	return
-}
-
-func getType(ty reflect.Type) (t reflect.Type) {
-	if ty.Kind() == reflect.Ptr {
-		t = ty.Elem()
-		return
-	}
-	t = ty
-	return
-}
-
-func getValue(value reflect.Value) (v reflect.Value) {
-	if value.Kind() == reflect.Ptr {
-		v = value.Elem()
-		return
-	}
-	v = value
 	return
 }

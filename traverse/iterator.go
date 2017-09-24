@@ -1,8 +1,9 @@
 package traverse
 
 import (
-	"fmt"
 	"reflect"
+
+	r "github.com/mojo-zd/go-library/reflect"
 )
 
 type CYCLE_FLAG int
@@ -61,8 +62,8 @@ func compare(v1, v2 interface{}) (isEqual bool) {
 	}
 
 	if v1Ty.Kind() == reflect.Ptr {
-		v1Ty = getType(v1Ty)
-		v2Ty = getType(v2Ty)
+		v1Ty = r.GetType(v1Ty)
+		v2Ty = r.GetType(v2Ty)
 		v1FieldNum := v1Ty.NumField()
 		v2FiledNum := v2Ty.NumField()
 
@@ -71,12 +72,36 @@ func compare(v1, v2 interface{}) (isEqual bool) {
 			return
 		}
 
-		v1Val := getValue(reflect.ValueOf(v1))
-		v2Val := getValue(reflect.ValueOf(v2))
+		v1Val := r.GetValue(reflect.ValueOf(v1))
+		v2Val := r.GetValue(reflect.ValueOf(v2))
 
 		for i := 0; i < v1FieldNum; i++ {
 			fieldName := v1Ty.Field(i).Name
-			if v1Val.FieldByName(fieldName).Interface() != v2Val.FieldByName(fieldName).Interface() {
+			if v1Val == reflect.ValueOf(nil) && v2Val == reflect.ValueOf(nil) {
+				continue
+			} else if v1Val == reflect.ValueOf(nil) || v2Val == reflect.ValueOf(nil) {
+				isEqual = false
+				break
+			}
+
+			fv1 := v1Val.FieldByName(fieldName)
+			fv2 := v2Val.FieldByName(fieldName)
+
+			if r.GetType(reflect.TypeOf(fv1.Interface())).Kind() == reflect.Struct && r.GetType(reflect.TypeOf(fv2.Interface())).Kind() == reflect.Struct {
+				if r.GetValue(fv1) == reflect.ValueOf(nil) && r.GetValue(fv2) == reflect.ValueOf(nil) {
+					isEqual = true
+					continue
+				}
+
+				if fv1 == reflect.ValueOf(nil) || fv2 == reflect.ValueOf(nil) {
+					isEqual = false
+					break
+				}
+
+				if isEqual = compare(fv1.Interface(), fv2.Interface()); !isEqual {
+					break
+				}
+			} else if v1Val.FieldByName(fieldName).Interface() != v2Val.FieldByName(fieldName).Interface() {
 				isEqual = false
 				break
 			}
@@ -93,6 +118,5 @@ func isSlice(value interface{}) (slice bool) {
 
 func isMap(value interface{}) bool {
 	ty := reflect.ValueOf(value)
-	fmt.Println(ty.Kind() == reflect.Map)
 	return ty.Kind() == reflect.Map
 }

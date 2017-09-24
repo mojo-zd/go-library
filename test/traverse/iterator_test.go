@@ -9,8 +9,13 @@ import (
 )
 
 type Person struct {
-	Name string
-	Sex  int
+	Name    string
+	Sex     int
+	Country *Country
+}
+
+type Country struct {
+	Location string
 }
 
 func Test_Iterator(t *testing.T) {
@@ -32,14 +37,10 @@ func Test_Map_Iterator(t *testing.T) {
 }
 
 func Test_Contains(t *testing.T) {
-	person1 := &Person{Name: "mojo", Sex: 5}
+	country := &Country{Location: "china"}
+	person1 := &Person{Name: "mojo", Sex: 5, Country: country}
 	person2 := &Person{Name: "mt", Sex: 4}
-	person3 := &Person{Name: "mojo", Sex: 5}
+	person3 := &Person{Name: "mojo", Sex: 5, Country: country}
 	persons := []*Person{person1, person2}
 	fmt.Println(traverse.Contains(persons, person3))
-	//Eq(person1, person3)
-}
-
-func Eq(value1, value2 interface{}) {
-	debug.Display("", value1 == value2)
 }
