@@ -17,12 +17,11 @@ var (
 )
 
 type RequestInfo struct {
-	URL           string
-	Params        map[string]interface{}
-	Data          interface{}
-	Header        map[string]string
-	DefaultHeader bool
-	Timeout       int //以s为单位
+	URL     string
+	Params  map[string]interface{}
+	Data    interface{}
+	Header  map[string]string
+	Timeout int //以s为单位
 }
 
 type ResponseInfo struct {
@@ -129,13 +128,12 @@ func setClientInfo(requestInfo *RequestInfo, client *http.Client, httpClient *Ht
 		client.Timeout = time.Duration(requestInfo.Timeout) * time.Second
 	}
 
+	httpClient.defaultHeader(request)
+
 	if len(requestInfo.Header) > 0 {
 		httpClient.buildHeader(request)
 	}
 
-	if httpClient.DefaultHeader {
-		httpClient.defaultHeader(request)
-	}
 }
 
 func toString(data interface{}) (str string) {
