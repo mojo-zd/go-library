@@ -53,6 +53,11 @@ func (client *HttpClient) Put() (responseInfo *ResponseInfo) {
 	return
 }
 
+func (client *HttpClient) Delete() (responseInfo *ResponseInfo) {
+	responseInfo = doRequest(client, http.MethodDelete)
+	return
+}
+
 func doRequest(httpClient *HttpClient, method string) (responseInfo *ResponseInfo) {
 	responseInfo = &ResponseInfo{}
 	if err := validate(httpClient); err != nil {
