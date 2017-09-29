@@ -83,6 +83,10 @@ func doRequest(httpClient *HttpClient, method string) (responseInfo *ResponseInf
 
 	bytes, err = ioutil.ReadAll(response.Body)
 	responseInfo.Result = bytes
+
+	if responseInfo.Code == http.StatusNotFound {
+		responseInfo.Error = errors.New(string(bytes))
+	}
 	defer response.Body.Close()
 
 	return

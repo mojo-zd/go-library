@@ -3,7 +3,7 @@
 go get github.com/mojo-zd/go-library
 ```
 
-### 工具类集合
+### 常用工具类
 ```
 示例对象:
 type Person struct {
