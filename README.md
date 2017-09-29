@@ -120,3 +120,6 @@ response := client.BuildRequestInfo(&http.RequestInfo{
 
 debug.Display("==修改成功的返回数据==", response)
 ```
+
+#### json转struct
+推荐使用 https://github.com/json-iterator/go
