@@ -1,3 +1,7 @@
+### 安装
+```
+go get github.com/mojo-zd/go-library
+```
 
 ### 工具类集合
 ```
