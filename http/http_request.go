@@ -60,6 +60,7 @@ func (client *HttpClient) Delete() (responseInfo *ResponseInfo) {
 
 func doRequest(httpClient *HttpClient, method string) (responseInfo *ResponseInfo) {
 	responseInfo = &ResponseInfo{}
+
 	if err := validate(httpClient); err != nil {
 		responseInfo.Error = err
 		return
@@ -68,7 +69,7 @@ func doRequest(httpClient *HttpClient, method string) (responseInfo *ResponseInf
 	bytes := []byte{}
 	client := &http.Client{}
 
-	request, err := http.NewRequest(method, httpClient.URL, strings.NewReader(toString(httpClient.Data)))
+	request, err := http.NewRequest(method, httpClient.BuildURL(), strings.NewReader(toString(httpClient.Data)))
 	setClientInfo(httpClient.RequestInfo, client, httpClient, request)
 
 	response, err := client.Do(request)
@@ -142,7 +143,6 @@ func setClientInfo(requestInfo *RequestInfo, client *http.Client, httpClient *Ht
 	if len(requestInfo.Header) > 0 {
 		httpClient.buildHeader(request)
 	}
-
 }
 
 func toString(data interface{}) (str string) {
