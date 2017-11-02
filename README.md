@@ -1,4 +1,5 @@
 # go-library
+
 [![Go Report Card](https://goreportcard.com/report/github.com/mojo-zd/go-library)]
 
 ### 安装
