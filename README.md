@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/xwjdsh/manssh)]
+
 ### 安装
 ```
 go get github.com/mojo-zd/go-library
