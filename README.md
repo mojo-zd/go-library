@@ -1,6 +1,7 @@
 # go-library
 
 ![Go Report Card](https://goreportcard.com/badge/github.com/mojo-zd/go-library)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mojo-zd/go-library)](https://goreportcard.com/report/github.com/mojo-zd/go-library)
 
 
 ### 安装
