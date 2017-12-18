@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	defaultHeader = map[string]string{"Content-Type": "application/json"}
+	defaultHeader = map[string]string{"Content-Type": "application/json", "Accept": "application/json"}
 )
 
 type RequestInfo struct {
